@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZDisk_Link Bypasser</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div class="container">
+        <div id="searchbar" class="justify-center flex">
+            <input id="inp" class=""type="text" placeholder="Enter ur Zdisk LInk" class="bg-slate-400 border-l border-r-emerald-700"></input>
+            <button class="bg-green-500"onclick="execute()">Play Video</button>
+        </div>
+        <div id="vid" class="bg-zinc-800 h-[500px]">
+            
+        </div>
+
+    </div>
+</body>
+<script>
+    function decryptUid(text) {
+	let result = "";
+
+	for (let i = 0; i < text.length; i++) {
+		let char = text[i];
+		if (/[a-zA-Z]/.test(char)) { // Check if character is a letter
+			let shift = -2;
+			let start = char === char.toUpperCase() ? 'A'.charCodeAt(0) : 'a'.charCodeAt(0);
+
+			// Shift the character and wrap around if necessary
+			result += String.fromCharCode((char.charCodeAt(0) - start + shift + 26) % 26 + start);
+		} else {
+			// Non-alphabet characters are added without decryption
+			result += char;
+		}
+	}
+
+	return result;
+    }
+    function execute(){
+        zdisk_link= document.querySelector("#inp").value;
+        console.log(zdisk_link)
+        oid = zdisk_link.split("/")
+        oid = oid[9]
+        uid1 = decryptUid(oid)
+        uid2 = decryptUid(uid1)
+        fetch("https://api.zdisk.xyz/getfile?uid="+uid2)
+        .then(response => response.json()).then(data => {
+            console.log(data);
+            slink = `https://stream.zdisk.xyz/${data.cid.toString().replace("-100", "")}/${data.mid}/${data.fn}`
+            console.log(slink)
+            document.getElementById("vid").innerHTML = `<video id="my-player" class="video-js" controls preload="auto"><source src="${slink}" type="video/mp4"></source>
+                <p class="vjs-no-js">
+                To view this video please enable JavaScript, and consider upgrading to a
+                    web browser that
+                    <a href="https://videojs.com/html5-video-support/" target="_blank">
+                    supports HTML5 video
+                    </a>
+                </p>
+                </video>`
+        });   
+    }
+    
+    
+    
+</script>
+</html>
